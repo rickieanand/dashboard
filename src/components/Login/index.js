@@ -2,7 +2,9 @@ import React, { useState } from 'react'
 import { Typography, Paper, Avatar, Button, FormControl, Input, InputLabel } from '@material-ui/core'
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined'
 import withStyles from '@material-ui/core/styles/withStyles'
-import { Link, withRouter } from 'react-router-dom'
+import { Link, withRouter, Redirect } from 'react-router-dom'
+
+import fire from '../../fire'
 
 const styles = theme => ({
     main: {
@@ -40,50 +42,59 @@ const styles = theme => ({
         const { classes } = props,
             [email, setEmail] = useState(''),
             [password, setPassword] = useState(''),
+            [authenticatedUser, setauthenticatedUser] = useState({}),
             onSubmit = e => {
                 e.preventDefault()
-                console.log('email: ' + email)
-                console.log('password: ' + password)
+                fire.auth()
+                    .signInWithEmailAndPassword(email, password)
+                    .then((ud) => {
+                        ud && setauthenticatedUser({ ud })
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
             }
+        console.log('=======>>>>>>>', fire.auth().currentUser)
         return (
-            <main className={classes.main}>
-                <Paper className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Sign in
-                        </Typography>
-                    <form className={classes.form} onSubmit={onSubmit}>
-                        <FormControl margin="normal" required fullWidth>
-                            <InputLabel htmlFor="email">Email Address</InputLabel>
-                            <Input id="email" name="email" autoComplete="off" autoFocus onChange={e => setEmail(e.target.value)} />
-                        </FormControl>
-                        <FormControl margin="normal" required fullWidth>
-                            <InputLabel htmlFor="password">Password</InputLabel>
-                            <Input name="password" type="password" id="password" autoComplete="off" onChange={e => setPassword(e.target.value)} />
-                        </FormControl>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="primary"
-                            className={classes.submit}>
+            authenticatedUser ? <Redirect to='/dashboard' /> :
+                <main className={classes.main}>
+                    <Paper className={classes.paper}>
+                        <Avatar className={classes.avatar}>
+                            <LockOutlinedIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5">
                             Sign in
+                        </Typography>
+                        <form className={classes.form} onSubmit={onSubmit}>
+                            <FormControl margin="normal" required fullWidth>
+                                <InputLabel htmlFor="email">Email Address</InputLabel>
+                                <Input id="email" name="email" autoComplete="off" autoFocus onChange={e => setEmail(e.target.value)} />
+                            </FormControl>
+                            <FormControl margin="normal" required fullWidth>
+                                <InputLabel htmlFor="password">Password</InputLabel>
+                                <Input name="password" type="password" id="password" autoComplete="off" onChange={e => setPassword(e.target.value)} />
+                            </FormControl>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="primary"
+                                className={classes.submit}>
+                                Sign in
                             </Button>
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="outlined"
-                            color="secondary"
-                            component={Link}
-                            to="/register"
-                            className={classes.submit}>
-                            Register
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="outlined"
+                                color="secondary"
+                                component={Link}
+                                to="/register"
+                                className={classes.submit}>
+                                Register
                             </Button>
-                    </form>
-                </Paper>
-            </main>
+                        </form>
+                    </Paper>
+                </main>
         )
     }
 

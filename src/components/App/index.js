@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Homepage from '../Homepage';
 import Dashboard from '../Dashboard';
 import Register from '../Register';
 import Login from '../Login';
+import fire from '../../fire'
 
 /*components required to use material-ui*/
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -15,19 +16,32 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 const theme = createMuiTheme()
 
 
-export const App = props => (
-    <MuiThemeProvider theme={theme}>
-        <CssBaseline />
-        <Router>
-            <Switch>
-                {/* Routing according to the path entered */}
-                <Route exact path='/' component={Homepage} />
-                <Route exact path='/register' component={Register} />
-                <Route exact path='/login' component={Login} />
-                <Route exact path='/dashboard' component={Dashboard} />
-            </Switch>
-        </Router>
-    </MuiThemeProvider>
-)
+const App = (props) => {
+    const [authUser, setAuthUser] = useState('')
+
+    useEffect(() => {
+        fire.auth()
+            .onAuthStateChanged(authUser => {
+                authUser
+                    ? setAuthUser(authUser)
+                    : setAuthUser({ authUser: null })
+            })
+        console.log('authUser:', authUser)
+
+    }, [authUser])
+    return (
+        < MuiThemeProvider theme={theme} >
+            <CssBaseline />
+            <Router>
+                <Switch>
+                    <Route exact path='/' render={(props) => (<Homepage authUser={authUser} {...props} />)} />
+                    <Route exact path='/register' render={(props) => (<Register authUser={authUser} {...props} />)} />
+                    <Route exact path='/login' render={(props) => (<Login authUser={authUser} {...props} />)} />
+                    <Route exact path='/dashboard' render={(props) => (<Dashboard authUser={authUser} {...props} />)} />
+                </Switch>
+            </Router>
+        </MuiThemeProvider>
+    )
+}
 
 export default App
