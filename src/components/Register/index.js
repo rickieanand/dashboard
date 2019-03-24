@@ -96,15 +96,15 @@ const Register = (props) => {
                             Register
                     </Button>
 
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            color="secondary"
-                            component={Link}
-                            to="/login"
-                            className={classes.submit}>
-                            Go back to Login
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="secondary"
+                        component={Link}
+                        to="/login"
+                        className={classes.submit}>
+                        Go back to Login
                     </Button>
                     </form>
                 </Paper>

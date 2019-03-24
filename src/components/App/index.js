@@ -28,16 +28,16 @@ const App = (props) => {
             })
         console.log('authUser:', authUser)
 
-    }, [authUser])
+    }, [])
     return (
         < MuiThemeProvider theme={theme} >
             <CssBaseline />
             <Router>
                 <Switch>
-                    <Route exact path='/' render={(props) => (<Homepage authUser={authUser} {...props} />)} />
-                    <Route exact path='/register' render={(props) => (<Register authUser={authUser} {...props} />)} />
-                    <Route exact path='/login' render={(props) => (<Login authUser={authUser} {...props} />)} />
-                    <Route exact path='/dashboard' render={(props) => (<Dashboard authUser={authUser} {...props} />)} />
+                    <Route exact path='/' component={Homepage} />
+                    <Route exact path='/register' component={Register} />
+                    <Route exact path='/login' component={Login} />
+                    <Route exact path='/dashboard' component={Dashboard} />
                 </Switch>
             </Router>
         </MuiThemeProvider>

@@ -42,21 +42,28 @@ const styles = theme => ({
         const { classes } = props,
             [email, setEmail] = useState(''),
             [password, setPassword] = useState(''),
-            [authenticatedUser, setauthenticatedUser] = useState({}),
             onSubmit = e => {
                 e.preventDefault()
-                fire.auth()
-                    .signInWithEmailAndPassword(email, password)
+                fire.auth().signInWithEmailAndPassword(email, password)
                     .then((ud) => {
-                        ud && setauthenticatedUser({ ud })
+                        ud && alert('Login successful')
                     })
                     .catch((error) => {
                         console.log(error);
+                        alert(error)
                     });
+            },
+            reset = (email) => {
+                email && fire.auth().sendPasswordResetEmail(email).then(() => {
+                    alert('check your email')
+                }).catch((error) => {
+                    alert(error)
+                })
             }
-        console.log('=======>>>>>>>', fire.auth().currentUser)
-        return (
-            authenticatedUser ? <Redirect to='/dashboard' /> :
+        if (fire.auth().currentUser) {
+            return (<Redirect to='/dashboard' />)
+        } else {
+            return (
                 <main className={classes.main}>
                     <Paper className={classes.paper}>
                         <Avatar className={classes.avatar}>
@@ -92,10 +99,20 @@ const styles = theme => ({
                                 className={classes.submit}>
                                 Register
                             </Button>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="outlined"
+                                color="secondary"
+                                onClick={() => { reset(email) }}
+                                className={classes.submit}>
+                                Forgot?
+                            </Button>
                         </form>
                     </Paper>
                 </main>
-        )
+            )
+        }
     }
 
 export default withRouter(withStyles(styles)(Login))
